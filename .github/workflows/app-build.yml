@@ -16,14 +16,17 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Login to DockerHub
-      run: echo "Skipping login as DockerHub is not used"
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose-plugin
+        docker compose version  # Sprawdź, czy docker-compose działa
 
     - name: Build and Run Docker Compose
       run: |
         ls -la # Debugging: Sprawdzenie, czy plik istnieje
-        docker-compose -f docker-compose.yaml up -d --build
+        docker compose -f docker-compose.yaml up -d --build
 
     - name: Stop and clean up
       if: always()
-      run: docker-compose -f docker-compose.yaml down
+      run: docker compose -f docker-compose.yaml down
