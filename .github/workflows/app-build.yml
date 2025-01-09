@@ -1,4 +1,4 @@
-name: Application Test
+name: Application Build and Test
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  app-test:
+  app-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,7 @@ jobs:
 
     - name: Build and Run Services with Docker Compose
       run: |
-        docker-compose -f docker-compose.yaml up -d --build
+        docker-compose up -d --build
 
     - name: Test API Endpoints
       run: |
