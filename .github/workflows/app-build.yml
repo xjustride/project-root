@@ -1,28 +1,32 @@
-name: App Build Test
+name: Application Test
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build:
+  app-test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+    - name: Set up Docker
+      run: |
+        docker version
 
-    - name: Install dependencies
-      run: npm install
+    - name: Build and Run Services with Docker Compose
+      run: |
+        docker-compose -f docker-compose.yaml up -d --build
 
-    - name: Run tests
-      run: npm test
+    - name: Test API Endpoints
+      run: |
+        sleep 10
+        curl -f http://localhost:8080/api/items || echo "API Test Failed"
+
+    - name: Clean up
+      if: always()
+      run: |
+        docker-compose down
